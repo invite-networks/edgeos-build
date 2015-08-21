@@ -1,0 +1,71 @@
+#!/bin/bash
+#
+# This script will initilize the project
+#
+
+# Check for a source image
+if [ ! -f ${BOOTSTRAP_DIR}/${SOURCE_IMG} ]; then
+  echo "Could not fine source image '${SOURCE_IMG}'";
+  exit 2;
+fi
+
+# Check for a version
+if [[ -z ${VERSION} ]]; then
+  echo "A version varible must be specified!";
+  exit 2;
+fi
+
+# Make the build directory if needed
+if [ ! -d ${BUILD_DIR} ]; then
+  echo "Making dir '${BUILD_DIR}'"
+  mkdir ${BUILD_DIR}
+fi
+
+# Make the cache directory if needed
+if [ ! -d ${CACHE_DIR} ]; then
+  echo "Making dir '${CACHE_DIR}'"
+  mkdir ${CACHE_DIR}
+fi
+
+# Make the import directory if needed
+if [ ! -d ${IMPORT_DIR} ]; then
+  echo "Making dir '${IMPORT_DIR}'"
+  mkdir ${IMPORT_DIR}
+fi
+
+# Extract the source image if needed
+if [ ! -f "${EXTRACT_DIR}/squashfs.tmp" ]; then
+  run_command "sudo rm -rf ${EXTRACT_DIR}"
+  echo "Making dir '${EXTRACT_DIR}'"
+  run_command "sudo mkdir ${EXTRACT_DIR}"
+
+  pushd "${EXTRACT_DIR}" &>/dev/null
+  echo "Extracting the bootstrap tar"
+  run_command "sudo tar -xvf ${BOOTSTRAP_DIR}/${SOURCE_IMG}"
+  popd &>/dev/null
+
+fi
+
+# Create the Filesystem if needed
+if [ ! -d "${CACHE_DIR}/squashfs-root/etc" ]; then
+  run_command "sudo rm -rf ${CACHE_DIR}/squashfs-root"
+
+  pushd "${CACHE_DIR}" &>/dev/null
+  run_command "sudo chmod 777 ${CACHE_DIR}"
+
+  echo "Unsquashing File System"
+  run_command "sudo rm -rf squashfs-root"
+  run_command "unsquashfs -x -n ${EXTRACT_DIR}/squashfs.tmp 2>/tmp/xattrs"
+  run_command "sudo mv /tmp/xattrs ."
+  run_command "sudo rm -rf squashfs-root"
+  run_command "sudo unsquashfs -x ${EXTRACT_DIR}/squashfs.tmp"
+
+  popd &>/dev/null
+
+fi
+
+# Copy the filesystem from cache into the build directory
+if [[ ! -d ${CHROOT_DIR} ]]; then
+  echo "Initilizing the file system to ${CHROOT_DIR}"
+  run_command "sudo rsync -aSH ${CACHE_DIR}/squashfs-root/ ${CHROOT_DIR}/"
+fi

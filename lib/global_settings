@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+# These variables are the global settings, and will set any defaults they may not have been set in setting files 
+#
+
+# Where we build the new Firmware
+BUILD_DIR="${PROJECT_DIR}/build"
+
+# Archive Source
+ARCHIVE_DIR="${BUILD_DIR}/archive"
+
+# Cached directory
+CACHE_DIR="${PROJECT_DIR}/cache"
+
+# Temporary directory put on the filesystem, this is used for local packages to be installed or to copy files etc
+IMPORTS_DIR="${PROJECT_DIR}/imports"
+
+# Plan directory that includes packages to install
+PLANS_DIR="${PROJECT_DIR}/plans"
+
+# Overlay directory
+OVERLAYS_DIR="${PROJECT_DIR}/overlays"
+
+# Commands directory
+COMMANDS_DIR="${PROJECT_DIR}/commands"
+
+# Bootstrap directory
+BOOTSTRAP_DIR="${BASE_DIR}/bootstraps"
+
+# Location of the extracted tar
+EXTRACT_DIR="${CACHE_DIR}/extract"
+
+# Chroot Directory
+CHROOT_DIR="${BUILD_DIR}/chroot"

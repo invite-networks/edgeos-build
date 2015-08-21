@@ -1,0 +1,46 @@
+#!/bin/bash
+
+echo "Completing the Build"
+
+# Remove the old tar sources
+run_command "sudo rm -rf ${ARCHIVE_DIR}"
+
+# Create the archive directory
+run_command "sudo mkdir ${ARCHIVE_DIR}"
+
+pushd "${ARCHIVE_DIR}" &>/dev/null
+
+# Fix the xattrs
+set_ifs $'\n'
+
+for LINE in $(cat ${CACHE_DIR}/xattrs | grep xattr); do
+    attribute=$(echo $LINE | awk '{ print $6 }')
+    file=$(echo $LINE | awk '{ print $9 }' | sed 's/squashfs-root//g')
+
+    value=$(sudo getfattr -n $attribute --absolute-names $file | egrep -v '^#' | sed "s/$attribute=//g")
+
+    run_command "sudo setfattr -n $attribute -v \"$value\" \"${CHROOT_DIR}$file\""
+done
+
+return_ifs
+
+# Create the filesystem
+run_command "sudo mksquashfs ${CHROOT_DIR} squashfs.tmp"
+
+# Copy the files we need
+run_command "sudo cp ${EXTRACT_DIR}/compat ${ARCHIVE_DIR}/."
+run_command "sudo cp ${EXTRACT_DIR}/vmlinux.tmp ${ARCHIVE_DIR}/."
+
+# MD5 Hash
+run_command "sudo md5sum squashfs.tmp | awk '{ print \$1 }' | sudo tee squashfs.tmp.md5"
+run_command "sudo md5sum vmlinux.tmp | awk '{ print \$1 }' | sudo tee vmlinux.tmp.md5"
+
+# Version
+run_command "sudo echo \"Version:   ${VERSION}\" | sudo tee version.tmp"
+run_command "sudo echo \"EdgeRouter.${IMAGE_NAME}\" | sudo tee ${CHROOT_DIR}/etc/version"
+
+# Create the tar
+run_command "sudo tar -cf \"${BUILD_DIR}/${IMAGE_NAME}.tar\" *"
+run_command "sudo chmod 666 ${BUILD_DIR}/${IMAGE_NAME}.tar"
+
+popd &>/dev/null
