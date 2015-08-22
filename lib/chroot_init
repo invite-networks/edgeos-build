@@ -9,15 +9,22 @@ pushd {$BUILD_DIR} &> /dev/null
 # Flag we need to clean this up
 CHROOT_CLEANUP=1
 
+# Copy the imports directory if needed
+if [ -d "${PROJECT_DIR}/${IMPORTS_DIR}" ]; then
+    echo "Copying Imports directory to ${CHROOT_DIR}/${IMPORTS_DIR}"
+    run_command "sudo cp -r ${PROJECT_DIR}/${IMPORTS_DIR} ${CHROOT_DIR}/."
+fi
+
+
 # DNS Support
-run_command "cp /etc/resolv.conf ${CHROOT_DIR}/etc/resolv.conf"
+run_command "sudo cp -f /etc/resolv.conf ${CHROOT_DIR}/etc/resolv.conf"
 
 # APT Support
 run_chroot_command ${CHROOT_DIR} "echo \"deb http://http.us.debian.org/debian wheezy main contrib non-free\" >/etc/apt/sources.list"
 run_chroot_command ${CHROOT_DIR} "echo \"deb http://security.debian.org wheezy/updates main\" >>/etc/apt/sources.list"
 
 # Mounts
-run_command "mount --bind /dev/ ${CHROOT_DIR}/dev"
+run_command "sudo mount --bind /dev/ ${CHROOT_DIR}/dev"
 run_chroot_command ${CHROOT_DIR} "mount -t proc none /proc"
 run_chroot_command ${CHROOT_DIR} "mount -t sysfs none /sys"
 run_chroot_command ${CHROOT_DIR} "mount -t devpts none /dev/pts"

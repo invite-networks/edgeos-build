@@ -109,7 +109,7 @@ function run_chroot_command {
   local cmd=$2
   local description=$3
 
-  chroot ${chroot} /usr/bin/env \
+  sudo /usr/sbin/chroot ${chroot} /usr/bin/env \
     HOME="/root" \
     DEBIAN_FRONTEND="noninteractive" \
     DEBCONF_NONINTERACTIVE_SEEN="true" \

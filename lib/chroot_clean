@@ -8,7 +8,7 @@ echo "Cleaning up chroot enviroment"
 pushd {$BUILD_DIR} &> /dev/null
 
 # Remove the imports directory
-run_chroot_command ${CHROOT_DIR} "rm -rf /imports"
+#run_chroot_command ${CHROOT_DIR} "rm -rf /${IMPORTS_DIR}"
 
 run_chroot_command ${CHROOT_DIR} "rm -f /usr/sbin/policy-rc.d"
 run_chroot_command ${CHROOT_DIR} "cat /dev/null > /etc/resolv.conf"
@@ -21,7 +21,7 @@ run_chroot_command ${CHROOT_DIR} "umount /proc"
 run_chroot_command ${CHROOT_DIR} "umount /sys"
 run_chroot_command ${CHROOT_DIR} "umount /dev/pts"
 run_chroot_command ${CHROOT_DIR} "rm -rf /tmp/* ~/.bash_history"
-run_command "umount ${CHROOT_DIR}/dev"
+run_command "sudo umount ${CHROOT_DIR}/dev"
 
 unset CHROOT_CLEANUP
 

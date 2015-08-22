@@ -13,7 +13,8 @@ ARCHIVE_DIR="${BUILD_DIR}/archive"
 CACHE_DIR="${PROJECT_DIR}/cache"
 
 # Temporary directory put on the filesystem, this is used for local packages to be installed or to copy files etc
-IMPORTS_DIR="${PROJECT_DIR}/imports"
+# Relative to project, and chroot directory
+IMPORTS_DIR="imports"
 
 # Plan directory that includes packages to install
 PLANS_DIR="${PROJECT_DIR}/plans"

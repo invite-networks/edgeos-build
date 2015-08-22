@@ -27,12 +27,6 @@ if [ ! -d ${CACHE_DIR} ]; then
   mkdir ${CACHE_DIR}
 fi
 
-# Make the import directory if needed
-if [ ! -d ${IMPORT_DIR} ]; then
-  echo "Making dir '${IMPORT_DIR}'"
-  mkdir ${IMPORT_DIR}
-fi
-
 # Extract the source image if needed
 if [ ! -f "${EXTRACT_DIR}/squashfs.tmp" ]; then
   run_command "sudo rm -rf ${EXTRACT_DIR}"

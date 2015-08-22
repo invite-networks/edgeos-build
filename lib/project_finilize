@@ -24,6 +24,10 @@ done
 
 return_ifs
 
+# Version
+run_command "sudo echo \"Version:   ${VERSION}\" | sudo tee version.tmp"
+run_command "sudo echo \"EdgeRouter.${IMAGE_NAME}\" | sudo tee ${CHROOT_DIR}/etc/version"
+
 # Create the filesystem
 run_command "sudo mksquashfs ${CHROOT_DIR} squashfs.tmp"
 
@@ -35,11 +39,8 @@ run_command "sudo cp ${EXTRACT_DIR}/vmlinux.tmp ${ARCHIVE_DIR}/."
 run_command "sudo md5sum squashfs.tmp | awk '{ print \$1 }' | sudo tee squashfs.tmp.md5"
 run_command "sudo md5sum vmlinux.tmp | awk '{ print \$1 }' | sudo tee vmlinux.tmp.md5"
 
-# Version
-run_command "sudo echo \"Version:   ${VERSION}\" | sudo tee version.tmp"
-run_command "sudo echo \"EdgeRouter.${IMAGE_NAME}\" | sudo tee ${CHROOT_DIR}/etc/version"
-
 # Create the tar
+run_command "sudo rm -f ${BUILD_DIR}/*.tar"
 run_command "sudo tar -cf \"${BUILD_DIR}/${IMAGE_NAME}.tar\" *"
 run_command "sudo chmod 666 ${BUILD_DIR}/${IMAGE_NAME}.tar"
 
