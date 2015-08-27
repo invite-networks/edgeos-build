@@ -7,8 +7,7 @@ echo "Cleaning up chroot enviroment"
 
 pushd {$BUILD_DIR} &> /dev/null
 
-# Remove the imports directory
-#run_chroot_command ${CHROOT_DIR} "rm -rf /${IMPORTS_DIR}"
+run_chroot_command ${CHROOT_DIR} "rm -rf /${IMPORTS_DIR}"
 
 run_chroot_command ${CHROOT_DIR} "rm -f /usr/sbin/policy-rc.d"
 run_chroot_command ${CHROOT_DIR} "cat /dev/null > /etc/resolv.conf"
@@ -23,6 +22,13 @@ run_chroot_command ${CHROOT_DIR} "umount /dev/pts"
 run_chroot_command ${CHROOT_DIR} "rm -rf /tmp/* ~/.bash_history"
 run_command "sudo umount ${CHROOT_DIR}/dev"
 
+# Delete the cross architecture binaray if needed
+if [[ ! -z ${CROSS_ARCH} ]]; then
+        echo "Remvoing cross arhcitecture binary ${CROSS_ARCH}"
+        run_command "sudo rm -f ${CHROOT_DIR}/${CROSS_ARCH}"
+fi
+
+# Remove the imports directory
 unset CHROOT_CLEANUP
 
 popd &> /dev/null

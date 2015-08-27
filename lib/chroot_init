@@ -9,6 +9,12 @@ pushd {$BUILD_DIR} &> /dev/null
 # Flag we need to clean this up
 CHROOT_CLEANUP=1
 
+# Copy the cross architecture binaray if needed
+if [[ ! -z ${CROSS_ARCH} ]]; then
+	echo "Copying cross arhcitecture binary ${CROSS_ARCH}"
+	run_command "sudo cp ${CROSS_ARCH} ${CHROOT_DIR}/${CROSS_ARCH}"
+fi
+
 # Copy the imports directory if needed
 if [ -d "${PROJECT_DIR}/${IMPORTS_DIR}" ]; then
     echo "Copying Imports directory to ${CHROOT_DIR}/${IMPORTS_DIR}"
