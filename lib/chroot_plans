@@ -15,13 +15,13 @@ if [[ -d ${PLANS_DIR} ]]; then
       if [[ -f "/${CHROOT_DIR}/${IMPORTS_DIR}/${PACKAGE}" ]]; then
         echo "Installing local package ${PACKAGE}"
 
-        run_chroot_command ${CHROOT_DIR} "dpkg -i /${IMPORTS_DIR}/${PACKAGE}"
-	    run_chroot_command ${CHROOT_DIR} "apt-get install -f"
+        run_chroot_command ${CHROOT_DIR} "dpkg -i --force-overwrite /${IMPORTS_DIR}/${PACKAGE}"
+	run_chroot_command ${CHROOT_DIR} "apt-get install -f"
 
       elif [[ -f "/${CHROOT_DIR}/${IMPORTS_DIR}/${PACKAGE}.deb" ]]; then
 	    echo "Installing local DEB ${PACKAGE}"
 
-	    run_chroot_command ${CHROOT_DIR} "dpkg -i /${IMPORTS_DIR}/${PACKAGE}.deb"
+	    run_chroot_command ${CHROOT_DIR} "dpkg -i --force-overwrite /${IMPORTS_DIR}/${PACKAGE}.deb"
 	    run_chroot_command ${CHROOT_DIR} "apt-get install -f"
 
       else
